@@ -141,6 +141,17 @@ public:
             String qpibi;
             String qmn;
             String qflag;
+            // SML-III extra static (read-only)
+            String qid;
+            String qsid;
+            String qvfw;
+            String qvfw2;
+            String qdi;
+            String qmchgcr;
+            String qmuchgcr;
+            String qboot;
+            String qopm;
+            String qpgs;
             // dynamic
             String q1;
             String qpigs;
@@ -301,6 +312,13 @@ private:
     bool PIXX_QPI();
     bool PIXX_QMN();
     bool PIXX_QFLAG();
+    // SML-III extra (read-only)
+    bool PIXX_QID();
+    bool PIXX_QVFW();
+    bool PIXX_QDI();
+    bool PIXX_QMCHGCR();
+    bool PIXX_QBOOT();
+    bool PIXX_QOPM();
 
     bool isModbus();
 

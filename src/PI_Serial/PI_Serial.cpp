@@ -8,6 +8,12 @@
 #include "QPIRI.h"
 #include "QMN.h"
 #include "QFLAG.h"
+#include "QID.h"
+#include "QVFW.h"
+#include "QDI.h"
+#include "QMCHGCR.h"
+#include "QBOOT.h"
+#include "QOPM.h"
 // variable
 #include "Q1.h"
 #include "QPIGS.h"
@@ -334,6 +340,16 @@ PI_Serial::PI_Serial(HardwareSerial &serialPort, int rx, int tx)
     get.raw.qpibi.reserve(80);
     get.raw.qmn.reserve(48);
     get.raw.qflag.reserve(24);
+    get.raw.qid.reserve(24);
+    get.raw.qsid.reserve(32);
+    get.raw.qvfw.reserve(24);
+    get.raw.qvfw2.reserve(24);
+    get.raw.qdi.reserve(96);
+    get.raw.qmchgcr.reserve(32);
+    get.raw.qmuchgcr.reserve(32);
+    get.raw.qboot.reserve(8);
+    get.raw.qopm.reserve(8);
+    get.raw.qpgs.reserve(64);
     get.raw.q1.reserve(64);
     get.raw.qpigs.reserve(96);
     get.raw.qpigs2.reserve(24);
@@ -497,68 +513,120 @@ bool PI_Serial::loop()
                     {
                         beginCycleBackup();
                     }
-                    switch (requestCounter)
+                    if (protocol == PI30_SML)
                     {
-                    case 0:
-                        if (PIXX_QPIRI())
+                        // SML-III extended static sequence (read-only): QPIRI, QMN, QPI, QFLAG, QID, QVFW, QDI, QMCHGCR, QBOOT, QOPM
+                        switch (requestCounter)
                         {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 1:
-                        if (PIXX_QMN())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 2:
-                        if (PIXX_QPI())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 3:
-                        if (PIXX_QFLAG())
-                        {
-                            requestCounter++;
-                            if (cycleHadSuccessfulReply)
+                        case 0:
+                            if (PIXX_QPIRI()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 1:
+                            if (PIXX_QMN()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 2:
+                            if (PIXX_QPI()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 3:
+                            if (PIXX_QFLAG()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 4:
+                            if (PIXX_QID()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 5:
+                            if (PIXX_QVFW()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 6:
+                            if (PIXX_QDI()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 7:
+                            if (PIXX_QMCHGCR()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 8:
+                            if (PIXX_QBOOT()) requestCounter++; else { restoreCycleBackup(); requestCounter = 0; }
+                            break;
+                        case 9:
+                            if (PIXX_QOPM())
                             {
-                                clearCycleBackup();
-                                logStaticSummary();
+                                requestCounter++;
+                                if (cycleHadSuccessfulReply) { clearCycleBackup(); logStaticSummary(); }
+                                else { writeLog("[PI][WARN] proto=%s no valid static data", protocolToString(protocol)); restoreCycleBackup(); if (requestCallback) requestCallback(); }
+                            }
+                            else { restoreCycleBackup(); requestCounter = 0; }
+                            requestCounter = 0;
+                            requestStaticData = false;
+                            break;
+                        default:
+                            requestCounter = 0;
+                            requestStaticData = false;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        switch (requestCounter)
+                        {
+                        case 0:
+                            if (PIXX_QPIRI())
+                            {
+                                requestCounter++;
                             }
                             else
                             {
-                                writeLog("[PI][WARN] proto=%s no valid static data", protocolToString(protocol));
                                 restoreCycleBackup();
-                                if (requestCallback)
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 1:
+                            if (PIXX_QMN())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 2:
+                            if (PIXX_QPI())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 3:
+                            if (PIXX_QFLAG())
+                            {
+                                requestCounter++;
+                                if (cycleHadSuccessfulReply)
                                 {
-                                    requestCallback();
+                                    clearCycleBackup();
+                                    logStaticSummary();
+                                }
+                                else
+                                {
+                                    writeLog("[PI][WARN] proto=%s no valid static data", protocolToString(protocol));
+                                    restoreCycleBackup();
+                                    if (requestCallback)
+                                    {
+                                        requestCallback();
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
                             requestCounter = 0;
+                            requestStaticData = false;
+                            break;
                         }
-                        requestCounter = 0;
-                        requestStaticData = false;
-                        break;
                     }
                     break;
 
@@ -741,6 +809,21 @@ void PI_Serial::logStaticSummary() const
                  static_cast<unsigned>(get.raw.qpigs.length()),
                  static_cast<unsigned>(get.raw.qmod.length()),
                  static_cast<unsigned>(get.raw.qpiws.length()));
+        return;
+    }
+
+    if (protocol == PI30_SML)
+    {
+        const String fw = firstLogValue(JsonObjectConst(staticData), {DESCR_Main_CPU_Firmware_Version, DESCR_Secondary_CPU_Firmware_Version});
+        const String serial = firstLogValue(JsonObjectConst(staticData), {DESCR_Device_Serial_Number, DESCR_Device_Serial_Number_Long});
+        writeLog("[PI][STATIC] proto=%s id=%s model=%s fw=%s serial=%s raw(qdi=%u qid=%u)",
+                 protocolName.c_str(),
+                 protocolId.isEmpty() ? "-" : protocolId.c_str(),
+                 model.isEmpty() ? "-" : model.c_str(),
+                 fw.isEmpty() ? "-" : fw.c_str(),
+                 serial.isEmpty() ? "-" : serial.c_str(),
+                 static_cast<unsigned>(get.raw.qdi.length()),
+                 static_cast<unsigned>(get.raw.qid.length()));
         return;
     }
 
@@ -1089,6 +1172,31 @@ void PI_Serial::refineProtocol()
     {
         protocol = PI30_PIP_GK;
         return;
+    }
+
+    // SML-III signature: 25-field QPIRI + 21-field QPIGS + 32-char QPIWS + valid QDI/QVFW/QID
+    // This is a 5K PS/SML type that otherwise would look like generic PI30.
+    {
+        const bool qdiValid = isValidResponse(get.raw.qdi);
+        const bool qvfwValid = isValidResponse(get.raw.qvfw);
+        const bool qidValid = isValidResponse(get.raw.qid) || isValidResponse(get.raw.qsid);
+        const bool smlFields = qpiriFields == 25 && qpigsFields == 21 && qpiwsLength == 32;
+        const bool smlExtra = qdiValid || qvfwValid || qidValid;
+        if (smlFields && smlExtra)
+        {
+            protocol = PI30_SML;
+            if (protocol != previousProtocol)
+            {
+                writeLog("[PI][DETECT] refined=%s (SML-III 25/21/32)", protocolToString(protocol));
+            }
+            return;
+        }
+        // If we are already SML, keep it even without extra (still valid layout)
+        if (previousProtocol == PI30_SML && smlFields)
+        {
+            protocol = PI30_SML;
+            return;
+        }
     }
 
     if (protocol == PI30_UNKNOWN && (qpigsFields > 0 || qpiriFields > 0 || qpiwsLength > 0))

@@ -569,6 +569,16 @@ void SolarInverterService::refreshRawState()
     _state.updateRaw("QPIBI", _client->get.raw.qpibi);
     _state.updateRaw("QMN", _client->get.raw.qmn);
     _state.updateRaw("QFLAG", _client->get.raw.qflag);
+    _state.updateRaw("QID", _client->get.raw.qid);
+    _state.updateRaw("QSID", _client->get.raw.qsid);
+    _state.updateRaw("QVFW", _client->get.raw.qvfw);
+    _state.updateRaw("QVFW2", _client->get.raw.qvfw2);
+    _state.updateRaw("QDI", _client->get.raw.qdi);
+    _state.updateRaw("QMCHGCR", _client->get.raw.qmchgcr);
+    _state.updateRaw("QMUCHGCR", _client->get.raw.qmuchgcr);
+    _state.updateRaw("QBOOT", _client->get.raw.qboot);
+    _state.updateRaw("QOPM", _client->get.raw.qopm);
+    _state.updateRaw("QPGS", _client->get.raw.qpgs);
     _state.updateRaw("Q1", _client->get.raw.q1);
     _state.updateRaw("QPIGS", _client->get.raw.qpigs);
     _state.updateRaw("QPIGS2", _client->get.raw.qpigs2);

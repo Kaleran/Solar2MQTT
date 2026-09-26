@@ -44,6 +44,7 @@ Serial PI family:
 - `PI30REVO.20Protocol.20V03--20201112.pdf`
 - `PI30_PIP-GK_MK-Protocol.pdf`
 - `PI41_LV5048.5KW.protocol-20190222.for.customer.pdf`
+- `SML-III-.232.pdf` – PS RS232 protocol for SML-III 5K (QPIRI 25 / QPIGS 21 / QPIWS 32, QID/QVFW/QDI/QMCHGCR/QBOOT/QOPM)
 
 Modbus / register tables:
 
@@ -65,6 +66,7 @@ Additional references / candidates:
 | `PI16` | UART ASCII | detected | structured classic status | classic `QPIRI` / `QPIGS` / `QMOD` / `QPIWS` replies populate `DeviceData` and `LiveData`; `QPIBI` remains raw |
 | `PI18` | UART `^P...` | detected | structured | dedicated `^P005PI`, `^P007PIRI`, `^P005GS`, `^P006MOD`, `^P007FLAG`, `^P005FWS`, energy commands |
 | `PI30` | UART ASCII | detected | structured | generic PI30 base path |
+| `PI30_SML` | UART ASCII | detected | structured | **SML-III 5K (PS) – QPIRI 25 / QPIGS 21 / QPIWS 32, + QID/QSID/QVFW/QVFW2/QDI/QMCHGCR/QMUCHGCR/QBOOT/QOPM, read-only** |
 | `PI30_MAX` | UART ASCII | detected | structured | MAX variant, extended `QFLAG` / `QPIWS` / `QPIRI` |
 | `PI30_REVO` | UART ASCII | detected | structured | REVO variant with `QALL` layout |
 | `PI30_PIP_GK` | UART ASCII | detected | structured | PIP-GK/MK variant with ECO mode / extended `QPIWS` |

@@ -21,6 +21,7 @@ enum protocol_type_t
     MODBUS_SMG_II_11KW,
     MODBUS_ANENJI_SRNE,
     MODBUS_POWMR,
+    PI30_SML,
     PROTOCOL_TYPE_MAX
 };
 
@@ -42,6 +43,7 @@ inline const char *const protocolStrings[] = {
     "MODBUS_SMG_II_11KW",
     "MODBUS_ANENJI_SRNE",
     "MODBUS_POWMR",
+    "PI30_SML",
 };
 
 inline const char *protocolToString(protocol_type_t protocol)
@@ -86,7 +88,8 @@ inline bool isPi30LikeProtocol(protocol_type_t protocol)
            protocol == PI30_REVO ||
            protocol == PI30_PIP_GK ||
            protocol == PI41 ||
-           protocol == PI30_UNKNOWN;
+           protocol == PI30_UNKNOWN ||
+           protocol == PI30_SML;
 }
 
 inline bool isClassicPiStatusProtocol(protocol_type_t protocol)

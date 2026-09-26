@@ -200,4 +200,29 @@
 #define DESCR_Max_Discharging_Current "Max_Discharging_Current"                 // CCC
 #define DESCR_Solar_Power_Priority "Solar_Power_Priority"                       // Z
 #define DESCR_MPPT_String "MPPT_String"                                         // a
+// SML-III extra identity / static
+#define DESCR_Device_Serial_Number "Device_Serial_Number"
+#define DESCR_Device_Serial_Number_Long "Device_Serial_Number_Long"
+#define DESCR_Main_CPU_Firmware_Version "Main_CPU_Firmware_Version"
+#define DESCR_Secondary_CPU_Firmware_Version "Secondary_CPU_Firmware_Version"
+#define DESCR_QDI_AC_Output_Voltage "QDI_AC_Output_Voltage"
+#define DESCR_QDI_AC_Output_Frequency "QDI_AC_Output_Frequency"
+#define DESCR_QDI_Max_AC_Charging_Current "QDI_Max_AC_Charging_Current"
+#define DESCR_QDI_Battery_Under_Voltage "QDI_Battery_Under_Voltage"
+#define DESCR_QDI_Battery_Float_Voltage "QDI_Battery_Float_Voltage"
+#define DESCR_QDI_Battery_Bulk_Voltage "QDI_Battery_Bulk_Voltage"
+#define DESCR_QDI_Battery_Recharge_Voltage "QDI_Battery_Recharge_Voltage"
+#define DESCR_QDI_Max_Charging_Current "QDI_Max_Charging_Current"
+#define DESCR_QDI_Input_Voltage_Range "QDI_Input_Voltage_Range"
+#define DESCR_QDI_Output_Source_Priority "QDI_Output_Source_Priority"
+#define DESCR_QDI_Charger_Source_Priority "QDI_Charger_Source_Priority"
+#define DESCR_QDI_Battery_Type "QDI_Battery_Type"
+#define DESCR_QDI_Output_Mode "QDI_Output_Mode"
+#define DESCR_QDI_Battery_Redischarge_Voltage "QDI_Battery_Redischarge_Voltage"
+#define DESCR_QDI_PV_OK_Condition "QDI_PV_OK_Condition"
+#define DESCR_QDI_PV_Power_Balance "QDI_PV_Power_Balance"
+#define DESCR_Selectable_Max_Charging_Current "Selectable_Max_Charging_Current"
+#define DESCR_Selectable_Max_Utility_Charging_Current "Selectable_Max_Utility_Charging_Current"
+#define DESCR_DSP_Bootstrap "DSP_Bootstrap"
+#define DESCR_Output_Mode_Raw "Output_Mode_Raw"
 #endif
