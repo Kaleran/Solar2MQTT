@@ -387,7 +387,7 @@ bool PI_Serial::Init()
     }
     if (suspendSerial.load(std::memory_order_relaxed))
     {
-        this->my_serialIntf->setTimeout(500);
+        this->my_serialIntf->setTimeout(protocol == PI30_SML ? 900 : 500);
         this->my_serialIntf->begin(serialIntfBaud, SERIAL_8N1, _rxPin, _txPin);
         return true;
     }
@@ -400,7 +400,7 @@ bool PI_Serial::Init()
         }
         return true;
     }
-    this->my_serialIntf->setTimeout(500);
+    this->my_serialIntf->setTimeout(protocol == PI30_SML ? 900 : 500);
     if (protocol == NoD)
     {
         this->my_serialIntf->begin(serialIntfBaud, SERIAL_8N1, _rxPin, _txPin);
@@ -635,108 +635,185 @@ bool PI_Serial::loop()
                     {
                         beginCycleBackup();
                     }
-                    switch (requestCounter)
+                    if (protocol == PI30_SML)
                     {
-                    case 0:
-                        if (PIXX_QPIGS())
+                        // SML-III 5K: only QPIGS/QMOD/QPIWS/QPIRI are supported (no Q1/QALL/QPIGS2/QET)
+                        switch (requestCounter)
                         {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 1:
-                        if (PIXX_QPIGS2())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 2:
-                        if (PIXX_QMOD())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 3:
-                        if (PIXX_Q1())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 4:
-                        if (PIXX_QEX())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 5:
-                        if (PIXX_QPIWS())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 6:
-                        if (PIXX_QPIRI())
-                        {
-                            requestCounter++;
-                        }
-                        else
-                        {
-                            restoreCycleBackup();
-                            requestCounter = 0;
-                        }
-                        break;
-                    case 7:
-                        refineProtocol();
-                        if (cycleHadSuccessfulReply)
-                        {
-                            logDynamicSummary();
-                            markSuccessfulDynamicCycle();
-                            if (requestCallback)
+                        case 0:
+                            if (PIXX_QPIGS())
                             {
-                                requestCallback();
+                                requestCounter++;
                             }
-                            clearCycleBackup();
-                        }
-                        else
-                        {
-                            writeLog("[PI][WARN] proto=%s no valid dynamic data", protocolToString(protocol));
-                            restoreCycleBackup();
-                            if (requestCallback)
+                            else
                             {
-                                requestCallback();
+                                restoreCycleBackup();
+                                requestCounter = 0;
                             }
+                            break;
+                        case 1:
+                            if (PIXX_QMOD())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 2:
+                            if (PIXX_QPIWS())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 3:
+                            if (PIXX_QPIRI())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 4:
+                            refineProtocol();
+                            if (cycleHadSuccessfulReply)
+                            {
+                                logDynamicSummary();
+                                markSuccessfulDynamicCycle();
+                                if (requestCallback)
+                                {
+                                    requestCallback();
+                                }
+                                clearCycleBackup();
+                            }
+                            else
+                            {
+                                writeLog("[PI][WARN] proto=%s no valid dynamic data", protocolToString(protocol));
+                                restoreCycleBackup();
+                                if (requestCallback)
+                                {
+                                    requestCallback();
+                                }
+                            }
+                            requestCounter = 0;
+                            break;
                         }
-                        requestCounter = 0;
-                        break;
+                    }
+                    else
+                    {
+                        switch (requestCounter)
+                        {
+                        case 0:
+                            if (PIXX_QPIGS())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 1:
+                            if (PIXX_QPIGS2())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 2:
+                            if (PIXX_QMOD())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 3:
+                            if (PIXX_Q1())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 4:
+                            if (PIXX_QEX())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 5:
+                            if (PIXX_QPIWS())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 6:
+                            if (PIXX_QPIRI())
+                            {
+                                requestCounter++;
+                            }
+                            else
+                            {
+                                restoreCycleBackup();
+                                requestCounter = 0;
+                            }
+                            break;
+                        case 7:
+                            refineProtocol();
+                            if (cycleHadSuccessfulReply)
+                            {
+                                logDynamicSummary();
+                                markSuccessfulDynamicCycle();
+                                if (requestCallback)
+                                {
+                                    requestCallback();
+                                }
+                                clearCycleBackup();
+                            }
+                            else
+                            {
+                                writeLog("[PI][WARN] proto=%s no valid dynamic data", protocolToString(protocol));
+                                restoreCycleBackup();
+                                if (requestCallback)
+                                {
+                                    requestCallback();
+                                }
+                            }
+                            requestCounter = 0;
+                            break;
+                        }
                     }
                     break;
                 }
@@ -1359,7 +1436,7 @@ String PI_Serial::requestData(String command)
     this->my_serialIntf->write(0x0D);
     this->my_serialIntf->flush();
 
-    delay(20);
+    delay(protocol == PI30_SML ? 80 : 20);
     commandBuffer = this->my_serialIntf->readStringUntil('\r');
 
     const size_t cbLen = commandBuffer.length();
@@ -1408,8 +1485,9 @@ String PI_Serial::requestData(String command)
         connectionCounter = 0;
     }
     else if (commandBuffer == "NAK" ||
+             strstr(cbBuf, "NAK") != nullptr ||
              (cbLen >= (strlen(startChar) + 3) &&
-              memcmp(cbBuf + strlen(startChar), "NAK", 3) == 0)) // catch NAK without crc
+              memcmp(cbBuf + strlen(startChar), "NAK", 3) == 0)) // catch NAK without/with crc (SML NAKss)
     {
         commandBuffer = "NAK";
     }
