@@ -1,5 +1,7 @@
 # Solar2MQTT [![GitHub release](https://img.shields.io/github/release/softwarecrash/Solar2MQTT?include_prereleases=&sort=semver&color=blue)](https://github.com/softwarecrash/Solar2MQTT/releases/latest) [![Discord](https://img.shields.io/discord/1007020337482973254?logo=discord&label=Discord)](https://discord.gg/fb2nZWDExz)
 
+> **Fork Notice:** This fork contains modifications specifically tailored to the **Easun ISolar SML III 5.5 kW** inverter protocol (`SML-III-.232.pdf` / `PI30_SML`). As a result, other inverter protocols supported by the upstream project may no longer function correctly.
+
 # Looking for the ESP8266 Variant? go [HERE](https://github.com/softwarecrash/Solar2MQTT-ESP8266)
 
 # Features:
